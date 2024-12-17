@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-  "name": "shopify-quick-entry",
-  "description": "Quick entry for Shopify",
-=======
   "name": "quick-entry",
   "description": "Quick entry to your shopify store",
->>>>>>> 1351f11800388fceb11d581ef4ed53c0984fd993
   "private": true,
   "version": "1.1.0",
   "type": "module",
