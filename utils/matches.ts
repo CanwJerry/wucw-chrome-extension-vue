@@ -1,1 +1,1 @@
-export const CONTENT_SCRIPT_MATCHES = "*://*.google.com/*";
+export const CONTENT_SCRIPT_MATCHES = "https://*.andaseat.com/*";

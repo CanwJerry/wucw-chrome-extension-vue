@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import DialogBox from "@/components/DialogBox.vue";
+  import ToolPopup from "@/components/ToolPopup.vue";
 </script>
 
 <template>
-  <DialogBox />
+  <ToolPopup />
 </template>
 
 <style scoped></style>
