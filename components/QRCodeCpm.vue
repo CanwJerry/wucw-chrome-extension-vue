@@ -16,13 +16,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, computed } from "vue";
   import QrcodeVue from "qrcode.vue";
   import type { Level, RenderAs, GradientType, ImageSettings } from "qrcode.vue";
 
   const props = defineProps({ toastUrl: String });
-
-  const value:any = props.toastUrl;
+  const value:any = computed(() => {
+    return props.toastUrl;
+  })
   const size:number = 150;
   const margin:number = 1;
   const level = ref<Level>("M");

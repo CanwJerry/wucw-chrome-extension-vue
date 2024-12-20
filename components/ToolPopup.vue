@@ -25,6 +25,7 @@ defineProps({
 	msg: String,
 });
 
+
 const radiaoTitle = ref("请选择Shopify环境:");
 const currentEnv = ref("pro");
 
@@ -32,23 +33,16 @@ const handleButtonClick = async (data: string) => {
 	try {
 		switch (data) {
 			case "current_page":
-				const response = await browser.runtime.sendMessage({ hello: "world" });
-				console.log('😀', { response });
+				browser.runtime.sendMessage({ msg: "currentPage", env: currentEnv.value });
 				break;
 
-			// case "url_qrcode":
-			// 	await browser.tabs.sendMessage(tab.id, {
-			// 		msg: "QRCode",
-			// 		data: currentEnv,
-			// 	});
-			// 	break;
+			case "url_qrcode":
+				browser.runtime.sendMessage({ msg: "QRCode", env: currentEnv.value });
+				break;
 
-			// case "get_pd_id":
-			// 	await browser.tabs.sendMessage(tab.id, {
-			// 		msg: "getPdId",
-			// 		data: currentEnv,
-			// 	});
-			// 	break;
+			case "get_pd_id":
+				browser.runtime.sendMessage({ msg: "getPdId", env: currentEnv.value });
+				break;
 
 			case "open_back_file":
 				window.open(

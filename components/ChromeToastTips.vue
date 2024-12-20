@@ -1,6 +1,6 @@
 <template>
-	<section id="chromeToastTips" class="toast" :style="{ 'display': showTips }">
-		<span class="close-btn" @click="closeTips">x</span>
+	<section id="chromeToastTips" class="toast" :style="{ 'display': showDialog }">
+		<span class="close-btn" @click="close">x</span>
 		<p class="toast-text">{{ toastTips }}</p>
 		<p class="toast-url">{{ toastUrl }}</p>
 		<QRcodeCpm :toastUrl="toastUrl"></QRcodeCpm>
@@ -8,15 +8,54 @@
 </template>
 
 <script lang="ts" setup>
-	import { ref } from 'vue';
-	import QRcodeCpm from "@/components/QRCodeCpm.vue";
+import { ref, onMounted, onUnmounted } from 'vue';
+import { storage } from "wxt/storage";
+import QRcodeCpm from "./QRCodeCpm.vue";
 
-	let showTips = ref('block');
-	let toastTips = ref('testTips');
-	let toastUrl = ref('https://3syd8arkp17mhc1h-58188726331.shopifypreview.com/products/andaseat-kaiser-4-premium-gaming-chair?variant=41910169108539');
-	const closeTips = () => {
-		showTips.value = 'none';
-	};
+const emit = defineEmits(['update:modelValue']);
+
+const state = ref();
+
+let unwatch: (() => void) | undefined;
+
+onMounted(() => {
+	unwatch = storage.watch('local:tips', async (newValue) => {
+		state.value = newValue ?? null;
+		if(state.value.msg != "") {
+			show(state.value.msg, state.value.url);
+		}
+	});
+});
+
+onUnmounted(() => {
+	unwatch?.();
+});
+
+const showDialog = computed(() => {
+	return visible.value ? 'block' : 'none';
+})
+
+let toastTips = ref();
+let toastUrl = ref();
+let visible = ref(false);
+
+const show = (message: string, url: string) => {
+	visible.value = true;
+	toastTips.value = message;
+	toastUrl.value = url;
+}
+
+const close = () => {
+	visible.value = false;
+	toastTips.value = '';
+	toastUrl.value = '';
+	storage.setItem("local:tips", {msg: '', url: ''});
+}
+
+defineExpose({
+	show,
+	close
+})
 </script>
 
 <style scoped lang="scss">

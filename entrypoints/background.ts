@@ -1,7 +1,9 @@
+import { CONTENT_SCRIPT_MATCHES } from '../utils/matches';
+
 export default defineBackground(() => {
   browser.runtime.onMessage.addListener(async (message) => {
-    const allTabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-    const contentScriptMatches = new MatchPattern("*://*/*");
+    const allTabs = await browser.tabs.query({});
+    const contentScriptMatches = new MatchPattern(CONTENT_SCRIPT_MATCHES);
     const contentScriptTabs = allTabs.filter(
       (tab) =>
         tab.id != null &&
@@ -15,7 +17,7 @@ export default defineBackground(() => {
         return { tab: tab.id, response };
       }),
     );
-
+    
     return responses;
   });
 });
