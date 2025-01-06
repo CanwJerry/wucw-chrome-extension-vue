@@ -20,4 +20,15 @@ export default defineBackground(() => {
     
     return responses;
   });
+
+  browser.tabs.onActivated.addListener(async function(activeInfo) {
+    try {
+      const response = await browser.tabs.sendMessage(activeInfo.tabId, {
+        msg: 'changeTab',
+      });
+      return { tab: activeInfo.tabId, response };
+    } catch (error) {
+      console.warn(`Failed to send message to tab ${activeInfo.tabId}:`, error);
+    }
+  });
 });

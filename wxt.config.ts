@@ -11,6 +11,6 @@ export default defineConfig({
     name: "Quick Entry",
     version: "1.1.0",
     description: "Quick entry to your shopify store",
-    permissions: ["scripting", "activeTab", "tabs", "notifications", "storage"],
+    permissions: ["scripting", "activeTab", "tabs", "notifications", "storage", "clipboardWrite"],
   },
 });

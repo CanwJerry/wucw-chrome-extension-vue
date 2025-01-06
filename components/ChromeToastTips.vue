@@ -1,9 +1,9 @@
 <template>
 	<section id="chromeToastTips" class="toast" :style="{ 'display': showDialog }">
 		<span class="close-btn" @click="close">x</span>
-		<p class="toast-text">{{ toastTips }}</p>
-		<p class="toast-url">{{ toastUrl }}</p>
-		<QRcodeCpm :toastUrl="toastUrl"></QRcodeCpm>
+		<p class="toast-text" v-html="showToastTips"></p>
+		<p class="toast-url">{{ showToastUrl }}</p>
+		<QRcodeCpm v-if="showQRcodeCpm" :toastUrl="toastUrl"></QRcodeCpm>
 	</section>
 </template>
 
@@ -22,7 +22,10 @@ onMounted(() => {
 	unwatch = storage.watch('local:tips', async (newValue) => {
 		state.value = newValue ?? null;
 		if(state.value.msg != "") {
-			show(state.value.msg, state.value.url);
+			show(state.value.msg, state.value.url, state.value.showCode);
+		}
+		if(state.value.msg == "" && state.value.url == "") {
+			close();
 		}
 	});
 });
@@ -32,24 +35,34 @@ onUnmounted(() => {
 });
 
 const showDialog = computed(() => {
-	return visible.value ? 'block' : 'none';
+	return visible.value ? 'flex' : 'none';
+})
+
+const showToastTips = computed(() => {
+	return toastTips.value;
+})
+
+const showToastUrl = computed(() => {
+	return toastUrl.value;
 })
 
 let toastTips = ref();
 let toastUrl = ref();
+let showQRcodeCpm = ref(false);
 let visible = ref(false);
 
-const show = (message: string, url: string) => {
+const show = (message: string, url: string, showCode: boolean = false) => {
 	visible.value = true;
 	toastTips.value = message;
 	toastUrl.value = url;
+	showQRcodeCpm.value = showCode;
 }
 
 const close = () => {
 	visible.value = false;
 	toastTips.value = '';
 	toastUrl.value = '';
-	storage.setItem("local:tips", {msg: '', url: ''});
+	storage.setItem("local:tips", {msg: '', url: '', showCode: false});
 }
 
 defineExpose({
