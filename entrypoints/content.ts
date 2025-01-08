@@ -138,7 +138,7 @@ export default defineContentScript({
             const title = data.product.title;
             const length = data.product.variants.length;
             const str = title.concat("<br/>VARIANTS : " + length);
-            copyFunc(str, data.product.id);
+            copyFunc(str, `ID: ${data.product.id}`);
           })
           .catch((error) => {
             tips("出错了~😱", "");
