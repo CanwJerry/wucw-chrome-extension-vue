@@ -29,15 +29,18 @@ export default defineContentScript({
           return;
         }
 
+        // 添加当前标签页的 URL 刷新逻辑
+        const currentUrl = window.location.href;
+
         if (req.msg === "currentPage") {
-          req.env === "pro" && pro("currentPage");
-          req.env === "dev" && dev("currentPage");
+          req.env === "pro" && pro("currentPage", currentUrl);
+          req.env === "dev" && dev("currentPage", currentUrl);
         } else if (req.msg === "QRCode") {
-          req.env === "pro" && pro("QRCode");
-          req.env === "dev" && dev("QRCode");
+          req.env === "pro" && pro("QRCode", currentUrl);
+          req.env === "dev" && dev("QRCode", currentUrl);
         } else if (req.msg === "getPdId") {
-          req.env === "pro" && pro("getPdId");
-          req.env === "dev" && dev("getPdId");
+          req.env === "pro" && pro("getPdId", currentUrl);
+          req.env === "dev" && dev("getPdId", currentUrl);
         } else if (req.msg === "changeTab") {
           tips("", "");
         }
@@ -48,13 +51,13 @@ export default defineContentScript({
       }
     });
 
-    function pro(data: string) {
+    function pro(data: string, currentUrl: string) {
       let proUrl;
       
-      if (window.location.href.indexOf("/?_ab=0&_fd=0&_sc=1") > -1) {
-        proUrl = window.location.href.replace("/?_ab=0&_fd=0&_sc=1", "");
+      if (currentUrl.indexOf("/?_ab=0&_fd=0&_sc=1") > -1) {
+        proUrl = currentUrl.replace("/?_ab=0&_fd=0&_sc=1", "");
       } else {
-        proUrl = window.location.href;
+        proUrl = currentUrl;
       }
 
       switch (data) {
@@ -65,12 +68,12 @@ export default defineContentScript({
           copyFunc("QRCode", proUrl, true);
           break;
         case "getPdId":
-          getProductInfo();
+          getProductInfo(currentUrl);
           break;
       }
     }
 
-    function dev(data: string) {
+    function dev(data: string, currentUrl: string) {
       if (window.document.getElementById("preview-bar-iframe")) {
         const isIFrame = (
           input: HTMLElement | null
@@ -84,8 +87,8 @@ export default defineContentScript({
         const url = (
           iframeDoc?.getElementById("share_theme_url") as HTMLInputElement
         ).value;
-        const pathName = window.location.pathname;
-        const search = window.location.search;
+        const pathName = new URL(currentUrl).pathname;
+        const search = new URL(currentUrl).search;
         const devUrl = `${url}${pathName}${search}` || "";
 
         switch (data) {
@@ -96,7 +99,7 @@ export default defineContentScript({
             copyFunc("QRCode", devUrl, true);
             break;
           case "getPdId":
-            getProductInfo();
+            getProductInfo(currentUrl);
             break;
         }
       } else {
@@ -129,16 +132,19 @@ export default defineContentScript({
       }
     }
 
-    function getProductInfo() {
-      if (window.location.pathname.indexOf("/products") > -1) {
+    function getProductInfo(currentUrl: string) {
+      if (new URL(currentUrl).pathname.indexOf("/products") > -1) {
         tips("加载中..✨✨", "");
-        fetch(`${window.location.href.split("?")[0]}.json`)
+        fetch(`${currentUrl.split("?")[0]}.json`)
           .then((response) => response.json())
           .then((data) => {
-            const title = data.product.title;
+            const title = `${data.product.title} 🏷️ <br/>`;
             const length = data.product.variants.length;
-            const str = title.concat("<br/>VARIANTS : " + length);
-            copyFunc(str, `ID: ${data.product.id}`);
+            const sku = new URLSearchParams(window.location.search).get('variant');
+            const str = title.concat("<br/>VARIANTS : " + length + "<br/>SKU : " + sku);
+            copyFunc(str, `ID : ${data.product.id}`);
+
+
           })
           .catch((error) => {
             tips("出错了~😱", "");

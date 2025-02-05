@@ -13,8 +13,12 @@ export default defineBackground(() => {
 
     const responses = await Promise.all(
       contentScriptTabs.map(async (tab) => {
-        const response = await browser.tabs.sendMessage(tab.id!, message);
-        return { tab: tab.id, response };
+        if(tab.active) {
+          const response = await browser.tabs.sendMessage(tab.id!, message);
+          return { tab: tab.id, response };
+        } else {
+          return { tab: null, response: null };
+        }
       }),
     );
     
@@ -23,9 +27,19 @@ export default defineBackground(() => {
 
   browser.tabs.onActivated.addListener(async function(activeInfo) {
     try {
+      const tab = await browser.tabs.get(activeInfo.tabId);
+
+      // 检查标签页 URL 是否匹配内容脚本的匹配模式
+      const contentScriptMatches = new MatchPattern(CONTENT_SCRIPT_MATCHES);
+      if (!tab.url || !contentScriptMatches.includes(tab.url)) {
+        return;
+      }
+      
       const response = await browser.tabs.sendMessage(activeInfo.tabId, {
         msg: 'changeTab',
+        tabId: activeInfo.tabId
       });
+      
       return { tab: activeInfo.tabId, response };
     } catch (error) {
       console.warn(`Failed to send message to tab ${activeInfo.tabId}:`, error);

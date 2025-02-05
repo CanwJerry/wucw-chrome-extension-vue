@@ -8,12 +8,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { storage } from "wxt/storage";
 import QRcodeCpm from "./QRCodeCpm.vue";
 
 const emit = defineEmits(['update:modelValue']);
 
+const toastTips = ref();
+const toastUrl = ref();
+const showQRcodeCpm = ref(false);
+const visible = ref(false);
 const state = ref();
 
 let unwatch: (() => void) | undefined;
@@ -45,11 +49,6 @@ const showToastTips = computed(() => {
 const showToastUrl = computed(() => {
 	return toastUrl.value;
 })
-
-let toastTips = ref();
-let toastUrl = ref();
-let showQRcodeCpm = ref(false);
-let visible = ref(false);
 
 const show = (message: string, url: string, showCode: boolean = false) => {
 	visible.value = true;
