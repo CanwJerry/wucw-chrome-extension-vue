@@ -5,10 +5,7 @@ export default defineBackground(() => {
     const allTabs = await browser.tabs.query({});
     const contentScriptMatches = new MatchPattern(CONTENT_SCRIPT_MATCHES);
     const contentScriptTabs = allTabs.filter(
-      (tab) =>
-        tab.id != null &&
-        tab.url != null &&
-        contentScriptMatches.includes(tab.url),
+      (tab) => tab?.id != null && tab?.url != null && contentScriptMatches.includes(tab?.url)
     );
 
     const responses = await Promise.all(
