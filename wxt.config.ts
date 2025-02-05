@@ -8,7 +8,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-vue"],
 
   manifest: {
-    name: "Quick Entry",
+    name: "Quick Access",
     version: "1.1.2",
     description: "Quick access to your shopify store",
     permissions: ["scripting", "activeTab", "tabs", "notifications", "storage", "clipboardWrite"],
