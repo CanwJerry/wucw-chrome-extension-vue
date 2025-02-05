@@ -11,8 +11,13 @@ export default defineBackground(() => {
     const responses = await Promise.all(
       contentScriptTabs.map(async (tab) => {
         if(tab.active) {
-          const response = await browser.tabs.sendMessage(tab.id!, message);
-          return { tab: tab.id, response };
+          try {
+            const response = await browser.tabs.sendMessage(tab.id!, message);
+            return { tab: tab.id, response };
+          } catch (error) {
+            console.warn(`Failed to send message to tab ${tab.id}:`, error);
+            return { tab: tab.id, response: null };
+          }
         } else {
           return { tab: null, response: null };
         }
