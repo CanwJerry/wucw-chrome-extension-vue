@@ -1,6 +1,16 @@
 <template>
 	<div class="radio-box">
-		<h2>{{ radiaoTitle }}</h2>
+		<h2>
+			{{ radiaoTitle }}
+			<el-tooltip
+        class="box-item"
+        effect="dark"
+        content="给自己放个花"
+        placement="top"
+      >
+				<img class="firework" @click="handleButtonClick('firework')" width="24" height="24" src="https://img.icons8.com/arcade/24/firework.png" alt="firework"/>
+      </el-tooltip>
+		</h2>
 
 		<el-radio-group v-model="currentEnv" size="large">
 			<el-radio-button class="pro" value="pro" size="default" label="正式" />
@@ -25,7 +35,6 @@ defineProps({
 	msg: String,
 });
 
-
 const radiaoTitle = ref("请选择Shopify环境:");
 const currentEnv = ref("pro");
 
@@ -42,6 +51,10 @@ const handleButtonClick = async (data: string) => {
 
 			case "get_pd_id":
 				browser.runtime.sendMessage({ msg: "getPdId", env: currentEnv.value });
+				break;
+
+			case "firework":
+				browser.runtime.sendMessage({ msg: "firework", env: '' });
 				break;
 
 			case "open_back_file":
@@ -108,6 +121,18 @@ const handleButtonClick = async (data: string) => {
 		font-size: 14px;
 		padding: 0;
 		margin: 0 0 8px 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		img {
+			cursor: pointer;
+		}
+
+		img:hover {
+			transition: transform 0.6s;
+			transform: scale(1.1);
+		} 
 	}
 
 	.el-radio-group {

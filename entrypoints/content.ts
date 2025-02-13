@@ -1,6 +1,7 @@
 import { CONTENT_SCRIPT_MATCHES } from "../utils/matches";
 import { createApp } from "vue";
 import ChromeToastTips from "../components/ChromeToastTips.vue";
+import confetti from 'canvas-confetti';
 
 export default defineContentScript({
   matches: [CONTENT_SCRIPT_MATCHES],
@@ -43,6 +44,8 @@ export default defineContentScript({
           req.env === "dev" && dev("getPdId", currentUrl);
         } else if (req.msg === "changeTab") {
           tips("", "");
+        } else if (req.msg === "firework") {
+          handleFirework();
         }
       } catch (error) {
         console.error("Extension context error:", error);
@@ -160,6 +163,45 @@ export default defineContentScript({
       showCode: boolean = false
     ) {
       storage.setItem("local:tips", { msg: msg, url: url, showCode: showCode });
+    }
+
+    function handleFirework() {
+      confetti({
+        particleCount: 240,         
+        spread: 200,               
+        origin: { y: 0.4 },
+        startVelocity: 30,        
+        gravity: 0.8,             
+        scalar: 1.2,              
+        ticks: 200,               
+        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'] // 添加更多颜色
+      });
+
+      // 添加第二波烟花
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 150,
+          origin: { y: 0.6, x: 0.3 },
+          startVelocity: 25,
+          gravity: 0.8,
+          scalar: 1,
+          ticks: 150
+        });
+      }, 300);
+
+      // 添加第三波烟花
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 150,
+          origin: { y: 0.7, x: 0.7 },
+          startVelocity: 25,
+          gravity: 0.8,
+          scalar: 1,
+          ticks: 80
+        });
+      }, 600);
     }
   },
 });
