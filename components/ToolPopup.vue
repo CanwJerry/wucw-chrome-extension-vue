@@ -59,38 +59,35 @@ const handleButtonClick = async (data: string) => {
 
 			case "open_back_file":
 				window.open(
-					`https://admin.shopify.com/store/andaseatglobal/content/files?selectedView=all`,
+					`${import.meta.env.VITE_SHOPIFY_ADMIN_URL}/content/files?selectedView=all`,
 					"_blank"
 				);
 				break;
 
 			case "open_back_page":
 				window.open(
-					`https://admin.shopify.com/store/andaseatglobal/pages`,
+					`${import.meta.env.VITE_SHOPIFY_ADMIN_URL}/pages`,
 					"_blank"
 				);
 				break;
 
 			case "open_back_product":
 				window.open(
-					`https://admin.shopify.com/store/andaseatglobal/products?selectedView=all`,
+					`${import.meta.env.VITE_SHOPIFY_ADMIN_URL}/products?selectedView=all`,
 					"_blank"
 				);
 				break;
 
 			case "open_home":
-				const env =
-					currentEnv.value === "pro"
-						? "?key=d3f8ea580ef6dbee2771397f87c1d0adb19203f2c5de85f913e986630e8b4160&preview_theme_id="
-						: "?_ab=0&_fd=0&_sc=1&preview_theme_id=127730122811";
-				window.open(`https://www.andaseat.com/${env}`, "_blank");
+				const previewParams = currentEnv.value == 'pro' ? import.meta.env.VITE_PRO_PREVIEW_PARAMS : import.meta.env.VITE_DEV_PREVIEW_PARAMS;
+				window.open(`${import.meta.env.VITE_SHOP_URL}/${previewParams}`, "_blank");
 				break;
 
 			case "open_env":
-				const themeId =
-					currentEnv.value === "pro" ? "127755092027" : "127730122811";
+				const themeId = currentEnv.value == 'pro' ? import.meta.env.VITE_PRO_THEME_ID : import.meta.env.VITE_DEV_THEME_ID;
+				
 				window.open(
-					`https://admin.shopify.com/store/andaseatglobal/themes/${themeId}/editor`,
+					`${import.meta.env.VITE_SHOPIFY_ADMIN_URL}/themes/${themeId}/editor`,
 					"_blank"
 				);
 				break;
