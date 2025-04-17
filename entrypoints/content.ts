@@ -77,19 +77,11 @@ export default defineContentScript({
     }
 
     function dev(data: string, currentUrl: string) {
-      if (window.document.getElementById("preview-bar-iframe")) {
-        const isIFrame = (
-          input: HTMLElement | null
-        ): input is HTMLIFrameElement =>
-          input !== null && input.tagName === "IFRAME";
-        const iframeBox = window.document.getElementById("preview-bar-iframe");
-        let iframeDoc;
-        if (isIFrame(iframeBox) && iframeBox.contentWindow) {
-          iframeDoc = iframeBox && iframeBox.contentWindow.document;
-        }
-        const url = (
-          iframeDoc?.getElementById("share_theme_url") as HTMLInputElement
-        ).value;
+      if (window.document.getElementById("PBarNextFrame")) {
+        const { theme, shop } = JSON.parse(document.getElementById('OnlineStorePreviewBarNextData')?.innerHTML as any);
+
+        const url = `https://${theme.sharingAccessToken}-${shop.id}.shopifypreview.com`;
+
         const pathName = new URL(currentUrl).pathname;
         const search = new URL(currentUrl).search;
         const devUrl = `${url}${pathName}${search}` || "";

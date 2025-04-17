@@ -6,7 +6,7 @@
         class="box-item"
         effect="dark"
         content="给自己放个花"
-        placement="top"
+        placement="left"
       >
 				<img class="firework" @click="handleButtonClick('firework')" width="24" height="24" src="https://img.icons8.com/arcade/24/firework.png" alt="firework"/>
       </el-tooltip>
