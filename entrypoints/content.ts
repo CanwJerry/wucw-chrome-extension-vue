@@ -136,10 +136,10 @@ export default defineContentScript({
             const title = `${data.product.title} 🏷️ <br/>`;
             const length = data.product.variants.length;
             const sku = new URLSearchParams(window.location.search).get('variant');
-            const str = title.concat("<br/>VARIANTS : " + length + "<br/>SKU : " + sku);
+            const skuCode = data.product.variants.find((item: any) => item.id == sku);
+            const str = title.concat("<br/>VARIANTS : " + length + "<br/>SKU : " + sku + "<br/>SKUCODE : " + skuCode.sku );
+            
             copyFunc(str, `ID : ${data.product.id}`);
-
-
           })
           .catch((error) => {
             tips("出错了~😱", "");
